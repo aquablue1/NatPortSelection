@@ -57,6 +57,8 @@ class Port(object):
         else:
             print("Unable to Cool Down, current status is %d" % self.status)
 
+    def __str__(self):
+        return "Port Nu"
 
 class PortPool(object):
     def __init__(self, port_start, port_end):
