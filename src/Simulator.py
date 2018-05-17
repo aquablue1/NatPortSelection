@@ -1,8 +1,11 @@
 from src.JobQueue import TIME_GAP
 from src.NAT import NAT
-from src.LogInfo import write_perodicalInfo, set_logs_empty
-SIMULATION_DURATION = 100
-REPORT_INTERVAL = 60000
+from src.LogInfo import write_perodicalInfo, set_logs_empty, write_runtimeInfo
+
+
+SIMULATION_DURATION = 500
+REPORT_INTERVAL = 5000
+
 
 if __name__ == '__main__':
     file_path = "../data/sample1000.log"
@@ -13,21 +16,36 @@ if __name__ == '__main__':
     # print(nat.queue.doing_queue)
     ready_list = []
     report_flag = REPORT_INTERVAL
+    outof_source_flag = False
+    # clean all the dump files.
     set_logs_empty(True)
+    print("Simulation Start, Total # of Job is %d" % len(nat.queue.total_job_queue))
     while time_left > 0:
-
+        if cur_time > 100:
+            print("start")
         for job in ready_list:
+            if len(nat.port_pool.pool_free)==0:
+                write_runtimeInfo("Temporarily Run Outof Port At time %f for Job %s." % (cur_time, job.jobID))
+                outof_source_flag = True
+                break
             job_duration = job.duration
-            chosen_port = nat.alg1_port_assign(job)
+            chosen_port = nat.alg2_port_assign(job)
             nat.queue.set_doing(job)
+            ready_list.remove(job)
 
         nat.port_pool.do_timepast(TIME_GAP)
         for port in nat.port_pool.pool_cooldown:
             if port.job.status == 2:
-                nat.queue.doing_queue.remove(port.job)
                 port.job.status = 3
-                nat.queue.finish_queue.append(port.job)
-        ready_list = nat.queue.get_ready(cur_time, TIME_GAP)
+                nat.queue.set_finish(port.job)
+
+
+        if outof_source_flag:
+            outof_source_flag = False
+            ready_list += nat.queue.get_ready(cur_time, TIME_GAP)
+        else:
+            print(ready_list)
+            ready_list = nat.queue.get_ready(cur_time, TIME_GAP)
 
         time_left -= TIME_GAP
         cur_time += TIME_GAP
@@ -42,3 +60,6 @@ if __name__ == '__main__':
             write_perodicalInfo("----- Current Finished Job List %d -----" % len(nat.queue.finish_queue))
             write_perodicalInfo(str(nat.queue.finish_queue))
             write_perodicalInfo("=============================\n")
+
+    print("Simulation Finish! Total Finished Job %d, Total Left Job %d" %(len(nat.queue.finish_queue),
+                                                                          len(nat.queue.todo_queue)))

@@ -11,6 +11,6 @@ if __name__ == '__main__':
             x_data.append(float(line_list[0]))
             y_data.append(int(line_list[1]))
 
-    plt.scatter(x_data, y_data, marker="+", color="black", label="Simulation")
+    plt.scatter(x_data, y_data, marker="+", color="black", label="Increasing")
     plt.legend(loc="upper left")
     plt.show()

@@ -1,5 +1,6 @@
 from src.JobQueue import Job
 from src.LogInfo import write_error, write_runtimeInfo, write_output
+
 DEFAULT_COOLDOWN_TIME = 10
 
 
@@ -140,7 +141,7 @@ class PortPool(object):
                 # Return true indicates this port already cool down.
                 # Hence move it to PoolFree
                 self.pool_cooldown.remove(port_cooldown)
-                port_cooldown.job = None
+                # port_cooldown.job = None
                 if port_cooldown.status == 0:
                     self.pool_free.append(port_cooldown)
                 else:
@@ -161,6 +162,13 @@ class PortPool(object):
                                                         todo_job.duration))
         self.pool_free.remove(tobe_port)
         self.pool_inuse.append(tobe_port)
+
+    def find_port(self, port_num_target):
+        for port in self.total_port:
+            if port.port_num == port_num_target:
+                return port
+        write_error("Port Number %d Not Found in Total Port Pool" % port_num_target)
+        return None
 
 
 

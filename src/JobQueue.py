@@ -80,18 +80,19 @@ class JobQueue(object):
         if job in self.todo_queue:
             self.todo_queue.remove(job)
             self.doing_queue.append(job)
+            ### ?job.status = 1
             return True
         else:
-            write_error("Error, current job %d not in QueueTodo" % job.jobID)
+            write_error("Error, current job %s not in QueueTodo" % job.jobID)
             return False
 
     def set_finish(self, job):
         if job in self.doing_queue:
-            self.todo_queue.remove(job)
+            self.doing_queue.remove(job)
             self.finish_queue.append(job)
             return True
         else:
-            write_error("Error, current job %d not in QueueDoing" % job.jobID)
+            write_error("Error, current job %s not in QueueDoing" % job.jobID)
             return False
 
     def __str__(self):
