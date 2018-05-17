@@ -4,6 +4,7 @@ from src.LogInfo import write_perodicalInfo, set_logs_empty, write_runtimeInfo
 
 
 SIMULATION_DURATION = 3700
+# SIMULATION_DURATION = 500
 REPORT_INTERVAL = 50000
 
 
@@ -19,7 +20,7 @@ if __name__ == '__main__':
     outof_source_flag = False
     # clean all the dump files.
     set_logs_empty(True)
-    print("Simulation Start, Total # of Job is %d" % len(nat.queue.total_job_queue))
+    print("Simulation Start, Total # of Job is %d." % len(nat.queue.total_job_queue))
     while time_left > 0:
         for job in ready_list:
             if len(nat.port_pool.pool_free)==0:
@@ -27,7 +28,7 @@ if __name__ == '__main__':
                 outof_source_flag = True
                 break
             job_duration = job.duration
-            chosen_port = nat.alg1_port_assign(job)
+            chosen_port = nat.alg4_port_assign(job)
             nat.queue.set_doing(job)
             ready_list.remove(job)
 
@@ -57,9 +58,12 @@ if __name__ == '__main__':
             write_perodicalInfo(str(nat.port_pool.pool_inuse))
             write_perodicalInfo("----- Current Pool CoolDown %d -----" % len(nat.port_pool.pool_cooldown))
             write_perodicalInfo(str(nat.port_pool.pool_cooldown))
-            write_perodicalInfo("----- Current Finished Job List %d -----" % len(nat.queue.finish_queue))
-            write_perodicalInfo(str(nat.queue.finish_queue))
+            write_perodicalInfo("----- Current Finished Job Num %d -----" % len(nat.queue.finish_queue))
+            # write_perodicalInfo(str(nat.queue.finish_queue))
             write_perodicalInfo("=============================\n")
+        if len(nat.queue.todo_queue)==0 and len(nat.queue.doing_queue)==0 and len(nat.port_pool.pool_cooldown)==0:
+            # If all the jobs has been done, and all the port are set free, end the simulation.
+            break
 
     print("Simulation Finish! Total Finished Job %d, Total Left Job %d" %(len(nat.queue.finish_queue),
                                                                           len(nat.queue.todo_queue)))

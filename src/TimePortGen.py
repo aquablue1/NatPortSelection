@@ -33,5 +33,5 @@ def draw_real():
 
 
 if __name__ == '__main__':
-    # draw_simulation()
-    draw_real()
+    draw_simulation()
+    # draw_real()

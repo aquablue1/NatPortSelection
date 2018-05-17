@@ -83,7 +83,7 @@ class JobQueue(object):
             ### ?job.status = 1
             return True
         else:
-            write_error("Error, current job %s not in QueueTodo" % job.jobID)
+            write_error("Error, current job %s not in QueueTodo." % job.jobID)
             return False
 
     def set_finish(self, job):
@@ -92,7 +92,7 @@ class JobQueue(object):
             self.finish_queue.append(job)
             return True
         else:
-            write_error("Error, current job %s not in QueueDoing" % job.jobID)
+            write_error("Error, current job %s not in QueueDoing." % job.jobID)
             return False
 
     def __str__(self):

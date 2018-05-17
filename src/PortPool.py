@@ -1,6 +1,7 @@
 from src.JobQueue import Job
 from src.LogInfo import write_error, write_runtimeInfo, write_output
 
+
 DEFAULT_COOLDOWN_TIME = 10
 
 
@@ -39,11 +40,11 @@ class Port(object):
                 self.status = 2
                 self.using_left = 0
                 self.job.status = 2
-                write_runtimeInfo("Port %d Just Cool Down" % self.port_num)
+                write_runtimeInfo("Port %d Just Cool Down." % self.port_num)
                 return True
             return False
         else:
-            write_error("Unable to Using, current status is %d" % self.status)
+            write_error("Unable to Using, current status is %d." % self.status)
 
     def cool_down(self, time_past):
         """
@@ -59,17 +60,17 @@ class Port(object):
             if (self.cooldown_left <= 0):
                 self.status = 0
                 self.cooldown_left = DEFAULT_COOLDOWN_TIME
-                write_runtimeInfo("Port %d Just Set Free" % self.port_num)
+                write_runtimeInfo("Port %d Just Set Free." % self.port_num)
                 return True
             return False
         else:
-            write_error("Unable to Cool Down, current status is %d" % self.status)
+            write_error("Unable to Cool Down, current status is %d." % self.status)
 
     def __str__(self):
-        return "Port Number  %d, Current Status: %d" % (self.port_num, self.status)
+        return "Port Number  %d, Current Status: %d." % (self.port_num, self.status)
 
     def __repr__(self):
-        return "Port Number  %d, Current Status: %d" % (self.port_num, self.status)
+        return "Port Number  %d, Current Status: %d." % (self.port_num, self.status)
 
 
 class PortPool(object):
@@ -134,7 +135,7 @@ class PortPool(object):
                 if port_inuse.status == 2:
                     self.pool_cooldown.append(port_inuse)
                 else:
-                    write_error("Warning! port removed from PoolInuse but not moved to PoolCooldown")
+                    write_error("Warning! port removed from PoolInuse but not moved to PoolCooldown.")
 
         for port_cooldown in self.pool_cooldown:
             if (port_cooldown.cool_down(time_gap)):
@@ -145,7 +146,7 @@ class PortPool(object):
                 if port_cooldown.status == 0:
                     self.pool_free.append(port_cooldown)
                 else:
-                    write_error("Warning! port removed from PoolCoolDown but not moved to PoolFree")
+                    write_error("Warning! port removed from PoolCoolDown but not moved to PoolFree.")
 
     def do_setInuse(self, tobe_pair):
         """
@@ -167,7 +168,7 @@ class PortPool(object):
         for port in self.total_port:
             if port.port_num == port_num_target:
                 return port
-        write_error("Port Number %d Not Found in Total Port Pool" % port_num_target)
+        write_error("Port Number %d Not Found in Total Port Pool." % port_num_target)
         return None
 
 
