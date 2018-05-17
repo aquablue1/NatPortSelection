@@ -3,12 +3,12 @@ from src.NAT import NAT
 from src.LogInfo import write_perodicalInfo, set_logs_empty, write_runtimeInfo
 
 
-SIMULATION_DURATION = 500
-REPORT_INTERVAL = 5000
+SIMULATION_DURATION = 3700
+REPORT_INTERVAL = 50000
 
 
 if __name__ == '__main__':
-    file_path = "../data/sample1000.log"
+    file_path = "../data/sampleHourly.log"
     nat = NAT(file_path)
     time_left = SIMULATION_DURATION
     cur_time = 0
@@ -27,7 +27,7 @@ if __name__ == '__main__':
                 outof_source_flag = True
                 break
             job_duration = job.duration
-            chosen_port = nat.alg3_port_assign(job)
+            chosen_port = nat.alg1_port_assign(job)
             nat.queue.set_doing(job)
             ready_list.remove(job)
 
