@@ -4,7 +4,7 @@ from src.PortPool import PortPool
 from src.LogInfo import write_error, write_runtimeInfo
 
 PORT_START = 1
-PORT_END = 200
+PORT_END = 350
 # PORT_END = 200        # This case failed because it needs more than 200 ports
 
 
@@ -28,6 +28,12 @@ class NAT(object):
         port = self.alg1_random_choose()
         self.port_pool.do_setInuse((port, job))
 
+    def find_next_port(self):
+        if self.next_port < PORT_END-1:
+            return self.next_port+1
+        else:
+            return PORT_START
+
     def alg2_increasing_choose(self):
         while True:
             port = self.port_pool.find_port(self.next_port)
@@ -36,12 +42,9 @@ class NAT(object):
                 continue
             elif port.status != 0:
                 write_runtimeInfo("Port Num %d current in use or in cooldown, switch to next" % self.next_port)
-                if self.next_port<PORT_END-1:
-                    self.next_port=self.next_port+1
-                else:
-                    self.next_port=PORT_START
+                self.next_port = self.find_next_port()
             else:
-                self.next_port += 1
+                self.next_port = self.find_next_port()
                 return port
 
     def alg2_port_assign(self, job):

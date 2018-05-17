@@ -7,7 +7,7 @@ class Job(object):
     def __init__(self, job_str):
         job_info_list = job_str.split("\t")
         self.jobID = job_info_list[1]
-        self.ts = float(job_info_list[0])
+        self.ts = float(job_info_list[0]) if float(job_info_list[0])>TIME_GAP else TIME_GAP
         self.origPort = int(job_info_list[3])
 
         # Initially the port num is not assigned

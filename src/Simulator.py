@@ -21,15 +21,13 @@ if __name__ == '__main__':
     set_logs_empty(True)
     print("Simulation Start, Total # of Job is %d" % len(nat.queue.total_job_queue))
     while time_left > 0:
-        if cur_time > 100:
-            print("start")
         for job in ready_list:
             if len(nat.port_pool.pool_free)==0:
                 write_runtimeInfo("Temporarily Run Outof Port At time %f for Job %s." % (cur_time, job.jobID))
                 outof_source_flag = True
                 break
             job_duration = job.duration
-            chosen_port = nat.alg2_port_assign(job)
+            chosen_port = nat.alg1_port_assign(job)
             nat.queue.set_doing(job)
             ready_list.remove(job)
 
@@ -42,10 +40,12 @@ if __name__ == '__main__':
 
         if outof_source_flag:
             outof_source_flag = False
+            # print(ready_list)
             ready_list += nat.queue.get_ready(cur_time, TIME_GAP)
+            ready_list = list(set(ready_list))
         else:
-            print(ready_list)
             ready_list = nat.queue.get_ready(cur_time, TIME_GAP)
+
 
         time_left -= TIME_GAP
         cur_time += TIME_GAP
