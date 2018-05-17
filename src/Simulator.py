@@ -27,7 +27,7 @@ if __name__ == '__main__':
                 outof_source_flag = True
                 break
             job_duration = job.duration
-            chosen_port = nat.alg1_port_assign(job)
+            chosen_port = nat.alg3_port_assign(job)
             nat.queue.set_doing(job)
             ready_list.remove(job)
 

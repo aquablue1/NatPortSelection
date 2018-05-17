@@ -4,7 +4,7 @@ from src.PortPool import PortPool
 from src.LogInfo import write_error, write_runtimeInfo
 
 PORT_START = 1
-PORT_END = 350
+PORT_END = 300
 # PORT_END = 200        # This case failed because it needs more than 200 ports
 
 
@@ -49,6 +49,14 @@ class NAT(object):
 
     def alg2_port_assign(self, job):
         port = self.alg2_increasing_choose()
+        self.port_pool.do_setInuse((port, job))
+
+    def alg3_min_choose(self):
+        chosen_port = min(port.port_num for port in self.port_pool.pool_free)
+        return self.port_pool.find_port(chosen_port)
+
+    def alg3_port_assign(self, job):
+        port = self.alg3_min_choose()
         self.port_pool.do_setInuse((port, job))
 
 if __name__ == '__main__':
