@@ -88,12 +88,14 @@ class PortPool(object):
             port_start, port_end = port_end, port_start
 
         self.total_port = []
+        self.total_port_dict = {}
         self.pool_free = []
         self.pool_inuse = []
         self.pool_cooldown = []
         for i in range(port_start, port_end):
             port_tmp = Port(i)
             self.total_port.append(port_tmp)
+            self.total_port_dict[i] = port_tmp
 
         self.init_nat()
 
@@ -165,11 +167,14 @@ class PortPool(object):
         self.pool_inuse.append(tobe_port)
 
     def find_port(self, port_num_target):
-        for port in self.total_port:
-            if port.port_num == port_num_target:
-                return port
-        write_error("Port Number %d Not Found in Total Port Pool." % port_num_target)
-        return None
+        try:
+            ret_port = self.total_port_dict[port_num_target]
+            return ret_port
+        except KeyError:
+            write_error("Port Number %d Not Found in Total Port Pool." % port_num_target)
+            return None
+
+
 
 
 
