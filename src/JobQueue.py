@@ -1,7 +1,7 @@
 from src.LogInfo import write_error
 
 MAX_JOB_NUM = 10000
-TIME_GAP = 0.001
+TIME_GAP = 0.01
 
 class Job(object):
     def __init__(self, job_str):
@@ -9,7 +9,7 @@ class Job(object):
         self.jobID = job_info_list[1]
         self.ts = float(job_info_list[0]) if float(job_info_list[0])>TIME_GAP else TIME_GAP
         self.origPort = int(job_info_list[3])
-
+        self.endStatus = str(job_info_list[11])
         # Initially the port num is not assigned
         self.realPort = -1
 

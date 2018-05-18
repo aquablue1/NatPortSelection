@@ -3,6 +3,7 @@ from src.LogInfo import write_error, write_runtimeInfo, write_output
 
 
 DEFAULT_COOLDOWN_TIME = 10
+RST_COOLDOWN_TIME = 120
 
 
 class Port(object):
@@ -27,6 +28,10 @@ class Port(object):
             self.job.status = 1
             self.job.realPort = self.port_num
             self.using_left = job.duration
+            if "RST" in self.job.endStatus:
+                self.cooldown_left = RST_COOLDOWN_TIME
+            else:
+                self.cooldown_left = DEFAULT_COOLDOWN_TIME
             write_output("%f\t%d" % (self.job.ts, self.port_num))
             return True
         else:

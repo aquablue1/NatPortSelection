@@ -9,7 +9,7 @@ REPORT_INTERVAL = 60000
 
 
 if __name__ == '__main__':
-    file_path = "../data/sampleDepartLarge.log"
+    file_path = "../data/sampleResid.log"
     nat = NAT(file_path)
     time_left = SIMULATION_DURATION
     cur_time = 0
@@ -46,7 +46,6 @@ if __name__ == '__main__':
             ready_list = list(set(ready_list))
         else:
             ready_list = nat.queue.get_ready(cur_time, TIME_GAP)
-
 
         time_left -= TIME_GAP
         cur_time += TIME_GAP
