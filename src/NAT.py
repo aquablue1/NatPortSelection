@@ -83,8 +83,8 @@ class NAT(object):
         chosen_port = self.port_pool.find_port(self.next_port)
         while True:
             if chosen_port is None:
-                self.next_port = self.find_next_port()
-                chosen_port = self.port_pool.total_port_dict[self.next_port]
+                self.next_port = PORT_START
+                chosen_port = self.port_pool.find_port(self.next_port)
             elif chosen_port.status != 0:
                 write_runtimeInfo("Port Num %d current in use or in cooldown, switch to Next One (Increasing)." % self.next_port)
                 self.next_port = self.find_next_port()

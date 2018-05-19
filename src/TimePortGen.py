@@ -5,6 +5,7 @@ from src.LogInfo import Output_Filename
 def draw_simulation():
     x_data = []
     y_data = []
+    Output_Filename = "../results/A5/output.log"
     with open(Output_Filename) as f:
         for line in f:
             line = line.strip()
@@ -20,10 +21,12 @@ def draw_simulation():
 def draw_real():
     x_data = []
     y_data = []
-    with open("../data/sampleResid.log") as f:
+    with open("../data/sampleHourly.log") as f:
         for line in f:
             line = line.strip()
             line_list = line.split("\t")
+            if line_list[11]=="REJ":
+                continue
             x_data.append(float(line_list[0]))
             y_data.append(int(line_list[3]))
 

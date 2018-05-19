@@ -2,7 +2,7 @@ from src.JobQueue import Job
 from src.LogInfo import write_error, write_runtimeInfo, write_output
 
 
-DEFAULT_COOLDOWN_TIME = 10
+DEFAULT_COOLDOWN_TIME = 1
 RST_COOLDOWN_TIME = 120
 
 
