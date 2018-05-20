@@ -20,7 +20,7 @@ if __name__ == '__main__':
     outof_source_flag = False
     # clean all the dump files.
     set_logs_empty(True)
-    print("Run A5 in Resid real data.")
+    print("Run A6 in Resid real data.")
     print("Simulation Start, Total # of Job is %d." % len(nat.queue.total_job_queue))
     while time_left > 0:
         for job in ready_list:
@@ -29,7 +29,7 @@ if __name__ == '__main__':
                 outof_source_flag = True
                 break
             job_duration = job.duration
-            chosen_port = nat.alg5_port_assign(job)
+            chosen_port = nat.alg6_port_assign(job)
             nat.queue.set_doing(job)
             ready_list.remove(job)
 

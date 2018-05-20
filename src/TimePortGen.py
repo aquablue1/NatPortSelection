@@ -5,7 +5,7 @@ from src.LogInfo import Output_Filename
 def draw_simulation():
     x_data = []
     y_data = []
-    Output_Filename = "../results_to_show/sticky_random/large/output.log"
+    Output_Filename = "../results_to_show/minimum/large/output.log"
     with open(Output_Filename) as f:
         for line in f:
             line = line.strip()
@@ -53,5 +53,5 @@ def draw_real():
 
 
 if __name__ == '__main__':
-    # draw_simulation()
-    draw_real()
+    draw_simulation()
+    # draw_real()

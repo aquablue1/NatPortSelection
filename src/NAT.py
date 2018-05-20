@@ -12,6 +12,8 @@ GAP_BETWEEN_REJP = 0.65
 GAP_BETWEEN_REJQ = 0.1
 
 
+
+
 # PORT_END = 200        # This case failed because it needs more than 200 ports
 
 
@@ -102,21 +104,21 @@ class NAT(object):
         self.port_pool.do_setInuse((port, job))
 
     def alg6_port_assign(self, job):
-        if job.status == "REJPM1":
+        if job.endStatus == "REJPM1":
             rand = random.randint(0, 50)
             if rand != 1:
                 new_job_ph1 = Job(job.job_str)
-                new_job_ph1.status = "REJPH1"
+                new_job_ph1.endStatus = "REJPH1"
                 new_job_ph1.ts += GAP_BETWEEN_DIFF_REJ
                 new_job_ph1.origPort += 1
 
                 new_job_pm1 = Job(job.job_str)
-                new_job_pm1.status = "REJPM1"
+                new_job_pm1.endStatus = "REJPM1"
                 new_job_pm1.ts += (GAP_BETWEEN_DIFF_REJ + GAP_BETWEEN_REJP)
                 new_job_pm1.origPort += 1
 
                 new_job_pe1 = Job(job.job_str)
-                new_job_pe1.status = "REJPE1"
+                new_job_pe1.endStatus = "REJPE1"
                 new_job_pe1.ts += (GAP_BETWEEN_DIFF_REJ + GAP_BETWEEN_REJP*2)
                 new_job_pe1.origPort += 1
 
@@ -124,30 +126,30 @@ class NAT(object):
                 self.queue.insert_urgent_job(new_job_pm1)
                 self.queue.insert_urgent_job(new_job_pe1)
 
-        elif job.status == "REJPE2":
+        elif job.endStatus == "REJPE2":
             rand = random.randint(0, 50)
             if rand != 1:
                 new_job_ph1 = Job(job.job_str)
-                new_job_ph1.status = "REJPH2"
+                new_job_ph1.endStatus = "REJPH2"
                 new_job_ph1.ts += GAP_BETWEEN_DIFF_REJ
                 new_job_ph1.increase_origPort(1)
 
                 new_job_pm1 = Job(job.job_str)
-                new_job_pm1.status = "REJPM2"
+                new_job_pm1.endStatus = "REJPM2"
                 new_job_pm1.ts += (GAP_BETWEEN_DIFF_REJ + GAP_BETWEEN_REJP)
                 new_job_pm1.increase_origPort(1)
 
                 new_job_pe1 = Job(job.job_str)
-                new_job_pe1.status = "REJPE2"
+                new_job_pe1.endStatus = "REJPE2"
                 new_job_pe1.ts += (GAP_BETWEEN_DIFF_REJ + GAP_BETWEEN_REJP * 2)
                 new_job_pe1.increase_origPort(1)
 
                 self.queue.insert_urgent_job(new_job_ph1)
                 self.queue.insert_urgent_job(new_job_pm1)
                 self.queue.insert_urgent_job(new_job_pe1)
-        elif job.status == "REJQ":
+        elif job.endStatus == "REJQ":
             new_job_q = Job(job.job_str)
-            new_job_q.status = "REJQ"
+            new_job_q.endStatus = "REJQ"
             new_job_q.ts += GAP_BETWEEN_REJQ
             new_job_q.increase_origPort(1)
 
