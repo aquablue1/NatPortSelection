@@ -1,12 +1,15 @@
 import random
 from src.JobQueue import JobQueue
-from src.PortPool import PortPool
+from src.PortPool import Job, PortPool
 from src.LogInfo import write_error, write_runtimeInfo
 
 PORT_START = 49152
 PORT_END = 65535
 # PORT_START = 1
 # PORT_END = 300
+GAP_BETWEEN_DIFF_REJ = 0.23
+GAP_BETWEEN_REJP = 0.65
+GAP_BETWEEN_REJQ = 0.1
 
 
 # PORT_END = 200        # This case failed because it needs more than 200 ports
@@ -95,6 +98,59 @@ class NAT(object):
                 return chosen_port
 
     def alg5_port_assign(self, job):
+        port = self.alg5_sticky_increase(job)
+        self.port_pool.do_setInuse((port, job))
+
+    def alg6_port_assign(self, job):
+        if job.status == "REJPM1":
+            rand = random.randint(0, 50)
+            if rand != 1:
+                new_job_ph1 = Job(job.job_str)
+                new_job_ph1.status = "REJPH1"
+                new_job_ph1.ts += GAP_BETWEEN_DIFF_REJ
+                new_job_ph1.origPort += 1
+
+                new_job_pm1 = Job(job.job_str)
+                new_job_pm1.status = "REJPM1"
+                new_job_pm1.ts += (GAP_BETWEEN_DIFF_REJ + GAP_BETWEEN_REJP)
+                new_job_pm1.origPort += 1
+
+                new_job_pe1 = Job(job.job_str)
+                new_job_pe1.status = "REJPE1"
+                new_job_pe1.ts += (GAP_BETWEEN_DIFF_REJ + GAP_BETWEEN_REJP*2)
+                new_job_pe1.origPort += 1
+
+                self.queue.insert_urgent_job(new_job_ph1)
+                self.queue.insert_urgent_job(new_job_pm1)
+                self.queue.insert_urgent_job(new_job_pe1)
+
+        elif job.status == "REJPE2":
+            rand = random.randint(0, 50)
+            if rand != 1:
+                new_job_ph1 = Job(job.job_str)
+                new_job_ph1.status = "REJPH2"
+                new_job_ph1.ts += GAP_BETWEEN_DIFF_REJ
+                new_job_ph1.increase_origPort(1)
+
+                new_job_pm1 = Job(job.job_str)
+                new_job_pm1.status = "REJPM2"
+                new_job_pm1.ts += (GAP_BETWEEN_DIFF_REJ + GAP_BETWEEN_REJP)
+                new_job_pm1.increase_origPort(1)
+
+                new_job_pe1 = Job(job.job_str)
+                new_job_pe1.status = "REJPE2"
+                new_job_pe1.ts += (GAP_BETWEEN_DIFF_REJ + GAP_BETWEEN_REJP * 2)
+                new_job_pe1.increase_origPort(1)
+
+                self.queue.insert_urgent_job(new_job_ph1)
+                self.queue.insert_urgent_job(new_job_pm1)
+                self.queue.insert_urgent_job(new_job_pe1)
+        elif job.status == "REJQ":
+            new_job_q = Job(job.job_str)
+            new_job_q.status = "REJQ"
+            new_job_q.ts += GAP_BETWEEN_REJQ
+            new_job_q.increase_origPort(1)
+
         port = self.alg5_sticky_increase(job)
         self.port_pool.do_setInuse((port, job))
 

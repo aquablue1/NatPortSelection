@@ -6,6 +6,7 @@ TIME_GAP = 0.01
 class Job(object):
     def __init__(self, job_str):
         job_info_list = job_str.split("\t")
+        self.job_str = job_str
         self.jobID = job_info_list[1]
         self.ts = float(job_info_list[0]) if float(job_info_list[0])>TIME_GAP else TIME_GAP
         self.origPort = int(job_info_list[3])
@@ -43,6 +44,10 @@ class Job(object):
                                                  self.duration
         )
 
+    def increase_origPort(self, gap):
+        self.origPort += gap
+        if self.origPort >= 65535:
+            self.origPort = self.origPort - 16383
 
 class JobQueue(object):
     def __init__(self,file_path=None):
@@ -95,6 +100,10 @@ class JobQueue(object):
         else:
             write_error("Error, current job %s not in QueueDoing." % job.jobID)
             return False
+
+    def insert_urgent_job(self, job):
+        self.total_job_queue.append(job)
+        self.todo_queue.append(job)
 
     def __str__(self):
         return [len(self.todo_queue), len(self.doing_queue),

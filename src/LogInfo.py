@@ -1,8 +1,8 @@
 import os
-Output_Filename = "../results_to_show/sticky_random/large/output.log"
-RuntimeInfo_Logname = "../results_to_show/sticky_random/large/runtime.log"
-Perodical_Logname = "../results_to_show/sticky_random/large/perodical.log"
-Error_Filename = "../results_to_show/sticky_random/large/Error.log"
+Output_Filename = "../results_to_show/sticky_increase/large/output.log"
+RuntimeInfo_Logname = "../results_to_show/sticky_increase/large/runtime.log"
+Perodical_Logname = "../results_to_show/sticky_increase/large/perodical.log"
+Error_Filename = "../results_to_show/sticky_increase/large/Error.log"
 
 
 def set_logs_empty(flag):
