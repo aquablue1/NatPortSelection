@@ -5,6 +5,8 @@ from src.LogInfo import write_error, write_runtimeInfo
 
 PORT_START = 49152
 PORT_END = 65535
+# PORT_START = 1
+# PORT_END = 300
 
 
 # PORT_END = 200        # This case failed because it needs more than 200 ports

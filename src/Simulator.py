@@ -3,7 +3,7 @@ from src.NAT import NAT
 from src.LogInfo import write_perodicalInfo, set_logs_empty, write_runtimeInfo
 
 
-SIMULATION_DURATION = 4000
+SIMULATION_DURATION = 1800
 # SIMULATION_DURATION = 500
 REPORT_INTERVAL = 600
 
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     outof_source_flag = False
     # clean all the dump files.
     set_logs_empty(True)
-    print("Run A5_Gp1 in Resid real data.")
+    print("Run A4 in Resid real data.")
     print("Simulation Start, Total # of Job is %d." % len(nat.queue.total_job_queue))
     while time_left > 0:
         for job in ready_list:
@@ -29,7 +29,7 @@ if __name__ == '__main__':
                 outof_source_flag = True
                 break
             job_duration = job.duration
-            chosen_port = nat.alg5_port_assign(job)
+            chosen_port = nat.alg4_port_assign(job)
             nat.queue.set_doing(job)
             ready_list.remove(job)
 

@@ -43,6 +43,7 @@ class Job(object):
                                                  self.duration
         )
 
+
 class JobQueue(object):
     def __init__(self,file_path=None):
         if file_path is None:
