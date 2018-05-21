@@ -3,6 +3,7 @@ import math
 import statistics
 import numpy as np
 
+
 def five_m(data_pool):
     avg = statistics.mean(data_pool)
     print("Mean Value is %f." % avg)
@@ -16,10 +17,18 @@ def five_m(data_pool):
     max_v = max(data_pool)
     print("Maximum Value is %f" % max_v)
 
+    max_v = statistics.mode(data_pool)
+    print("Mode Value is %f" % max_v)
+
     std = statistics.stdev(data_pool)
     print("Standard Deviation is %f" % std)
 
 if __name__ == '__main__':
+
+    # ==================================================================
+
+
+
     filepath = "../data/sampleDepartLarge.log"
     data_pool = []
     chosen = 100000
@@ -27,11 +36,11 @@ if __name__ == '__main__':
         for line in f:
             line = line.strip()
             line_list = line.split("\t")
-            if line_list[8] == "-" or line_list[11]=="REJ":
+            if line_list[8] == "-": # or line_list[11] == "REJ"
                 continue
             data_pool.append(float(line_list[8]))
     # data_pool.sort()
-    data_pool_log = [math.log(duration,10) for duration in data_pool]
+    data_pool_log = [math.log(duration, 10) for duration in data_pool]
     data_pool_log.sort()
     print(data_pool_log)
 
@@ -50,7 +59,7 @@ if __name__ == '__main__':
                 count += 1
                 # data_pool.remove(duration)
             else:
-                bins[cur] = count/total
+                bins[cur] = count / total
                 break
         cur += step
     print(bins)
@@ -59,11 +68,14 @@ if __name__ == '__main__':
     #     y_data.append(y_data[i-1]+bins[i])
     #     # print(y_data)
 
-    #plt.plot(bins.keys(),bins.values(), color="black", label="Campus NAT")
+    # plt.plot(bins.keys(), bins.values(), color="pink", label="Campus NAT (all)")
+
+    # ==================================================================
+
     plt.legend(loc="best")
     plt.ylabel("CDF")
     plt.xticks([-2, -1, 0, 1, 2, 3], [0.01, 0.1, 1, 10, 100, 1000])
-    plt.xlabel("Session Duration (In Second).")
+    plt.xlabel("Session Duration (in second).")
     # plt.show()
 
 

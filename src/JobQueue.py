@@ -61,7 +61,9 @@ class JobQueue(object):
         with open(file_path) as f:
             for line in f:
                 line = line.strip()
-                if line.split("\t")[8] == "-" or line.split("\t")[11] == "REJ":
+                if line.split("\t")[8] == "-":
+                    continue
+                if line.split("\t")[11] == "REJ":
                     continue
                 job_tmp = Job(line)
                 self.total_job_queue.append(job_tmp)
@@ -83,14 +85,34 @@ class JobQueue(object):
         rej_mother = "1518627602.059990	CHQjGb3zKmXR8CNL01	136.159.160.4	64856	" \
                      "40.97.114.136	443	tcp	-	0.057991	0	0	REJ	T	F	" \
                      "0	Sr	1	64	1	40	(empty)"
-        rejp_num = 200
-        for i in range(rejp_num):
+        rejp1_num = 500
+        for i in range(rejp1_num):
             ts = random.uniform(1, SIMULATION_DURATION)
             origPort = random.randint(49152, 65534)
             job = Job(rej_mother)
             job.ts = ts
             job.origPort = origPort
             job.endStatus = "REJPM1"
+            self.insert_urgent_job(job)
+
+        rejp2_num = 500
+        for i in range(rejp2_num):
+            ts = random.uniform(1, SIMULATION_DURATION)
+            origPort = random.randint(49152, 65534)
+            job = Job(rej_mother)
+            job.ts = ts
+            job.origPort = origPort
+            job.endStatus = "REJPE2"
+            self.insert_urgent_job(job)
+
+        rejq_num = 1
+        for i in range(rejq_num):
+            ts = random.uniform(1, 10)
+            origPort = random.randint(49152, 65534)
+            job = Job(rej_mother)
+            job.ts = ts
+            job.origPort = origPort
+            job.endStatus = "REJQ"
             self.insert_urgent_job(job)
 
 
