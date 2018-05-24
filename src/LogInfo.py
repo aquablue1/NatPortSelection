@@ -1,10 +1,10 @@
 import os
 
 
-Output_Filename = "../results_to_show/A7_rejp/large/output.log"
-RuntimeInfo_Logname = "../results_to_show/A7_rejp/large/runtime.log"
-Perodical_Logname = "../results_to_show/A7_rejp/large/perodical.log"
-Error_Filename = "../results_to_show/A7_rejp/large/Error.log"
+Output_Filename = "../results_to_show/random/large/output.log"
+RuntimeInfo_Logname = "../results_to_show/random/large/runtime.log"
+Perodical_Logname = "../results_to_show/random/large/perodical.log"
+Error_Filename = "../results_to_show/random/large/Error.log"
 
 
 def set_logs_empty(flag):

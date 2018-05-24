@@ -142,7 +142,7 @@ class PortPool(object):
                 if port_inuse.status == 2:
                     self.pool_cooldown.append(port_inuse)
                 else:
-                    write_error("Warning! port removed from PoolInuse but not moved to PoolCooldown.")
+                    write_error("Error! port removed from PoolInuse but not moved to PoolCooldown.")
 
         for port_cooldown in self.pool_cooldown:
             if (port_cooldown.cool_down(time_gap)):
@@ -153,7 +153,7 @@ class PortPool(object):
                 if port_cooldown.status == 0:
                     self.pool_free.append(port_cooldown)
                 else:
-                    write_error("Warning! port removed from PoolCoolDown but not moved to PoolFree.")
+                    write_error("Error! port removed from PoolCoolDown but not moved to PoolFree.")
 
     def do_setInuse(self, tobe_pair):
         """
@@ -172,6 +172,11 @@ class PortPool(object):
         self.pool_inuse.append(tobe_port)
 
     def find_port(self, port_num_target):
+        """
+        Find the Port Object based on the port number
+        :param port_num_target: port number
+        :return: Port object if found, else None
+        """
         try:
             ret_port = self.total_port_dict[port_num_target]
             return ret_port
