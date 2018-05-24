@@ -5,7 +5,7 @@ from src.LogInfo import Output_Filename
 def draw_simulation():
     x_data = []
     y_data = []
-    Output_Filename = "../results_to_show/A6_rejp/large/output.log"
+    Output_Filename = "../results_to_show/random/large/output.log"
     with open(Output_Filename) as f:
         for line in f:
             line = line.strip()
@@ -13,7 +13,7 @@ def draw_simulation():
             x_data.append(float(line_list[0]))
             y_data.append(int(line_list[1]))
 
-    plt.scatter(x_data, y_data, marker="+", s=60, color="black", label="sticky_increase + reattempt")
+    plt.scatter(x_data, y_data, marker="+", s=60, color="black", label="random")
     # plt.xlim()
     plt.ylim([52000, 57000])
     plt.xlim([650, 950])
@@ -44,7 +44,7 @@ def draw_real():
 
     print("low_count %d." % low_count)
     print("high_count %d" % high_count)
-    plt.scatter(x_data, y_data, marker="+", color="black",  s = 60, label="Rejected Session Type I")
+    plt.scatter(x_data, y_data, marker="+", color="black",  s=60, label="Rejected Session Type I")
     # plt.ylim([0, 66500])
     plt.ylim([52000, 57000])
     plt.xlim([1518628700, 1518629000])    # For Large DataSet

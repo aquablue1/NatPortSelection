@@ -6,6 +6,7 @@ SIMULATION_DURATION = 1800
 MAX_JOB_NUM = 10000
 TIME_GAP = 0.01
 
+
 class Job(object):
     def __init__(self, job_str):
         """
@@ -91,43 +92,14 @@ class JobQueue(object):
         self.total_job_queue.sort(key=lambda x: x.ts, reverse=False)
         for job in self.total_job_queue:
             self.todo_queue.append(job)
-        # self.add_rej_samples()
-
-    def add_rej_samples(self):
-        rej_mother = "1518627602.059990	CHQjGb3zKmXR8CNL01	136.159.160.4	64856	" \
-                     "40.97.114.136	443	tcp	-	0.057991	0	0	REJ	T	F	" \
-                     "0	Sr	1	64	1	40	(empty)"
-        rejp1_num = 500
-        for i in range(rejp1_num):
-            ts = random.uniform(1, SIMULATION_DURATION)
-            origPort = random.randint(49152, 65534)
-            job = Job(rej_mother)
-            job.ts = ts
-            job.origPort = origPort
-            job.endStatus = "REJPM1"
-            self.insert_urgent_job(job)
-
-        rejp2_num = 500
-        for i in range(rejp2_num):
-            ts = random.uniform(1, SIMULATION_DURATION)
-            origPort = random.randint(49152, 65534)
-            job = Job(rej_mother)
-            job.ts = ts
-            job.origPort = origPort
-            job.endStatus = "REJPE2"
-            self.insert_urgent_job(job)
-
-        rejq_num = 1
-        for i in range(rejq_num):
-            ts = random.uniform(1, 10)
-            origPort = random.randint(49152, 65534)
-            job = Job(rej_mother)
-            job.ts = ts
-            job.origPort = origPort
-            job.endStatus = "REJQ"
-            self.insert_urgent_job(job)
 
     def get_ready(self, cur_time, time_gap):
+        """
+        Get The list of all "ready" jobs. These job should be added to NAT in the next time slice
+        :param cur_time: current time
+        :param time_gap: should use default TIME_GAP
+        :return:
+        """
         ready_list = []
         for job in self.todo_queue:
             if job.ts < (cur_time + time_gap):
@@ -136,6 +108,11 @@ class JobQueue(object):
         return ready_list
 
     def set_doing(self, job):
+        """
+        Set the status of jobs as doing
+        :param job: job object
+        :return: True if set correctly, else False
+        """
         if job in self.todo_queue:
             self.todo_queue.remove(job)
             self.doing_queue.append(job)
@@ -146,6 +123,11 @@ class JobQueue(object):
             return False
 
     def set_finish(self, job):
+        """
+        Set the status of a job as finish and put it into the cooldown pool.
+        :param job: job object
+        :return: True if set correctly, else False
+        """
         if job in self.doing_queue:
             self.doing_queue.remove(job)
             self.finish_queue.append(job)
@@ -155,6 +137,12 @@ class JobQueue(object):
             return False
 
     def insert_urgent_job(self, job):
+        """
+        Insert temporary job into the system
+        Be cautious when using this method
+        :param job: job Object
+        :return:
+        """
         self.total_job_queue.append(job)
         self.todo_queue.append(job)
 

@@ -1,10 +1,10 @@
 import os
 
-
-Output_Filename = "../results_to_show/random/large/output.log"
-RuntimeInfo_Logname = "../results_to_show/random/large/runtime.log"
-Perodical_Logname = "../results_to_show/random/large/perodical.log"
-Error_Filename = "../results_to_show/random/large/Error.log"
+policy_str = "random"
+Output_Filename = "../results_to_show/%s/large/output.log" % policy_str
+RuntimeInfo_Logname = "../results_to_show/%s/large/runtime.log" % policy_str
+Perodical_Logname = "../results_to_show/%s/large/perodical.log" % policy_str
+Error_Filename = "../results_to_show/%s/large/Error.log" % policy_str
 
 
 def set_logs_empty(flag):
@@ -33,6 +33,7 @@ def write_runtimeInfo(content, filename = RuntimeInfo_Logname):
         f.write(content)
         f.write("\n")
     return True
+
 
 def write_perodicalInfo(content, filename=Perodical_Logname):
     with open(filename, 'a') as f:

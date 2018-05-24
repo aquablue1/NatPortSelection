@@ -18,28 +18,32 @@ if __name__ == '__main__':
     ready_list = []
     report_flag = REPORT_INTERVAL
     outof_source_flag = False
+
     # clean all the dump files.
     set_logs_empty(True)
+
     print("Run A7 in campus real data.")
     print("Simulation Start, Total # of Job is %d." % len(nat.queue.total_job_queue))
     while time_left > 0:
+        # move all jobs from ready_list to doing_list.
         for job in ready_list:
             if len(nat.port_pool.pool_free)==0:
                 write_runtimeInfo("Temporarily Run Outof Port At time %f for Job %s." % (cur_time, job.jobID))
                 outof_source_flag = True
                 break
             job_duration = job.duration
-            chosen_port = nat.alg7_port_assign(job)
+            chosen_port = nat.alg1_port_assign(job)
             nat.queue.set_doing(job)
             ready_list.remove(job)
 
         nat.port_pool.do_timepast(TIME_GAP)
+        # set the port as free if it finishes the cool_down procedure.
         for port in nat.port_pool.pool_cooldown:
             if port.job.status == 2:
                 port.job.status = 3
                 nat.queue.set_finish(port.job)
 
-
+        # Put new jobs into ready_list.
         if outof_source_flag:
             outof_source_flag = False
             # print(ready_list)
@@ -55,9 +59,9 @@ if __name__ == '__main__':
             report_flag = REPORT_INTERVAL
             write_perodicalInfo("===== Current Time %f =======" % cur_time)
             write_perodicalInfo(" Current Pool INUSE %d" % len(nat.port_pool.pool_inuse))
-            write_perodicalInfo(str(nat.port_pool.pool_inuse))
+            # write_perodicalInfo(str(nat.port_pool.pool_inuse))
             write_perodicalInfo("----- Current Pool CoolDown %d -----" % len(nat.port_pool.pool_cooldown))
-            write_perodicalInfo(str(nat.port_pool.pool_cooldown))
+            # write_perodicalInfo(str(nat.port_pool.pool_cooldown))
             write_perodicalInfo("----- Current Finished Job Num %d -----" % len(nat.queue.finish_queue))
             # write_perodicalInfo(str(nat.queue.finish_queue))
             write_perodicalInfo("=============================\n")

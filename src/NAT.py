@@ -12,8 +12,6 @@ GAP_BETWEEN_REJP = 0.65
 GAP_BETWEEN_REJQ = 0.1
 
 
-
-
 # PORT_END = 200        # This case failed because it needs more than 200 ports
 
 
@@ -27,6 +25,10 @@ class NAT(object):
 
 
     def alg1_random_choose(self):
+        """
+        Randomly choose a port number
+        :return: the chosen port
+        """
         rand = random.choice(self.port_pool.pool_free)
         # print(rand)
         if rand == None:
@@ -38,12 +40,20 @@ class NAT(object):
         self.port_pool.do_setInuse((port, job))
 
     def find_next_port(self):
+        """
+        Find the next port number, used only by increasing policies.
+        :return: next port number
+        """
         if self.next_port < PORT_END-1:
             return self.next_port+1
         else:
             return PORT_START
 
     def alg2_increasing_choose(self):
+        """
+        Monotonically increase the port number
+        :return: the chosen port
+        """
         while True:
             port = self.port_pool.find_port(self.next_port)
             if port is None:
@@ -61,6 +71,10 @@ class NAT(object):
         self.port_pool.do_setInuse((port, job))
 
     def alg3_min_choose(self):
+        """
+        Choose the minimum feasible port.
+        :return: the chosen port
+        """
         chosen_port = min(port.port_num for port in self.port_pool.pool_free)
         return self.port_pool.find_port(chosen_port)
 
@@ -69,6 +83,12 @@ class NAT(object):
         self.port_pool.do_setInuse((port, job))
 
     def alg4_follow_orig(self, job):
+        """
+        Try to use the original port number,
+        if the original port in use, randomly choose a feasible one from pool_free.
+        :param job: current job
+        :return: the chosen port
+        """
         chosen_port_num = job.origPort
         chosen_port = self.port_pool.find_port(chosen_port_num)
         if chosen_port is None:
@@ -86,6 +106,12 @@ class NAT(object):
         self.port_pool.do_setInuse((port, job))
 
     def alg5_sticky_increase(self, job):
+        """
+        Try to use the original port number,
+        if the original port in use, choose the next feasible port in increasing manner.
+        :param job: current job object
+        :return: the chosen port
+        """
         self.next_port = job.origPort
         chosen_port = self.port_pool.find_port(self.next_port)
         while True:
@@ -105,121 +131,6 @@ class NAT(object):
         port = self.alg5_sticky_increase(job)
         self.port_pool.do_setInuse((port, job))
 
-    def alg6_port_assign(self, job):
-        if job.endStatus == "REJPM1":
-            rand = random.randint(0, 15)
-            if rand != 1:
-                # print("Insert new job lists at port %d" % job.origPort)
-                new_job_ph1 = Job(job.job_str)
-                new_job_ph1.endStatus = "REJPH1"
-                new_job_ph1.ts = job.ts + GAP_BETWEEN_DIFF_REJ
-                new_job_ph1.origPort = job.origPort + 1
-
-                new_job_pm1 = Job(job.job_str)
-                new_job_pm1.endStatus = "REJPM1"
-                new_job_pm1.ts = job.ts + GAP_BETWEEN_DIFF_REJ + GAP_BETWEEN_REJP
-                new_job_pm1.origPort = job.origPort + 1
-
-                new_job_pe1 = Job(job.job_str)
-                new_job_pe1.endStatus = "REJPE1"
-                new_job_pe1.ts = job.ts + GAP_BETWEEN_DIFF_REJ + GAP_BETWEEN_REJP*2
-                new_job_pe1.origPort = job.origPort + 1
-
-                self.queue.insert_urgent_job(new_job_ph1)
-                self.queue.insert_urgent_job(new_job_pm1)
-                self.queue.insert_urgent_job(new_job_pe1)
-            else:
-                print("Finish A REJ.")
-
-        elif job.endStatus == "REJPE2":
-            rand = random.randint(0, 50)
-            if rand != 1:
-                new_job_ph1 = Job(job.job_str)
-                new_job_ph1.endStatus = "REJPH2"
-                new_job_ph1.ts = job.ts + GAP_BETWEEN_DIFF_REJ
-                new_job_ph1.origPort = job.origPort + 1
-
-                new_job_pm1 = Job(job.job_str)
-                new_job_pm1.endStatus = "REJPM2"
-                new_job_pm1.ts = job.ts + GAP_BETWEEN_DIFF_REJ + GAP_BETWEEN_REJP
-                new_job_pm1.origPort = job.origPort + 1
-
-                new_job_pe1 = Job(job.job_str)
-                new_job_pe1.endStatus = "REJPE2"
-                new_job_pe1.ts = job.ts + GAP_BETWEEN_DIFF_REJ + GAP_BETWEEN_REJP * 2
-                new_job_pe1.origPort = job.origPort + 1
-
-                self.queue.insert_urgent_job(new_job_ph1)
-                self.queue.insert_urgent_job(new_job_pm1)
-                self.queue.insert_urgent_job(new_job_pe1)
-        elif job.endStatus == "REJQ":
-            new_job_q = Job(job.job_str)
-            new_job_q.endStatus = "REJQ"
-            new_job_q.ts = job.ts + GAP_BETWEEN_REJQ
-            new_job_q.origPort = job.origPort + 1
-
-            self.queue.insert_urgent_job(new_job_q)
-
-        port = self.alg5_sticky_increase(job)
-        self.port_pool.do_setInuse((port, job))
-
-    def alg7_port_assign(self, job):
-        if job.endStatus == "REJPM1":
-            rand = random.randint(0, 15)
-            if rand != 1:
-                # print("Insert new job lists at port %d" % job.origPort)
-                new_job_ph1 = Job(job.job_str)
-                new_job_ph1.endStatus = "REJPH1"
-                new_job_ph1.ts = job.ts + GAP_BETWEEN_DIFF_REJ
-                new_job_ph1.origPort = job.origPort + 1
-
-                new_job_pm1 = Job(job.job_str)
-                new_job_pm1.endStatus = "REJPM1"
-                new_job_pm1.ts = job.ts + GAP_BETWEEN_DIFF_REJ + GAP_BETWEEN_REJP
-                new_job_pm1.origPort = job.origPort + 1
-
-                new_job_pe1 = Job(job.job_str)
-                new_job_pe1.endStatus = "REJPE1"
-                new_job_pe1.ts = job.ts + GAP_BETWEEN_DIFF_REJ + GAP_BETWEEN_REJP*2
-                new_job_pe1.origPort = job.origPort + 1
-
-                self.queue.insert_urgent_job(new_job_ph1)
-                self.queue.insert_urgent_job(new_job_pm1)
-                self.queue.insert_urgent_job(new_job_pe1)
-            else:
-                print("Finish A REJ.")
-
-        elif job.endStatus == "REJPE2":
-            rand = random.randint(0, 50)
-            if rand != 1:
-                new_job_ph1 = Job(job.job_str)
-                new_job_ph1.endStatus = "REJPH2"
-                new_job_ph1.ts = job.ts + GAP_BETWEEN_DIFF_REJ
-                new_job_ph1.origPort = job.origPort + 1
-
-                new_job_pm1 = Job(job.job_str)
-                new_job_pm1.endStatus = "REJPM2"
-                new_job_pm1.ts = job.ts + GAP_BETWEEN_DIFF_REJ + GAP_BETWEEN_REJP
-                new_job_pm1.origPort = job.origPort + 1
-
-                new_job_pe1 = Job(job.job_str)
-                new_job_pe1.endStatus = "REJPE2"
-                new_job_pe1.ts = job.ts + GAP_BETWEEN_DIFF_REJ + GAP_BETWEEN_REJP * 2
-                new_job_pe1.origPort = job.origPort + 1
-
-                self.queue.insert_urgent_job(new_job_ph1)
-                self.queue.insert_urgent_job(new_job_pm1)
-                self.queue.insert_urgent_job(new_job_pe1)
-        elif job.endStatus == "REJQ":
-            new_job_q = Job(job.job_str)
-            new_job_q.endStatus = "REJQ"
-            new_job_q.ts = job.ts + GAP_BETWEEN_REJQ
-            new_job_q.origPort = job.origPort + 1
-
-            self.queue.insert_urgent_job(new_job_q)
-
-        port = self.alg4_follow_orig(job)
-        self.port_pool.do_setInuse((port, job))
 
 
 if __name__ == '__main__':
